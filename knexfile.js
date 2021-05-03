@@ -1,6 +1,5 @@
 // Update with your config settings.
 const path = require('path');
-require('dotenv').config();
 
 const BASE_PATH = path.join(__dirname, 'db');
 

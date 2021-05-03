@@ -7,7 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "./node_modules/mocha/bin/_mocha ./test/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,7 @@
     "mocha": "^8.3.2"
   },
   "dependencies": {
+    "@koa/router": "^10.0.0",
     "dotenv": "^8.2.0",
     "knex": "^0.95.4",
     "koa": "^2.13.1",
