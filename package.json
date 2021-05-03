@@ -1,12 +1,13 @@
 {
   "name": "family-photos-api",
   "version": "1.0.0",
-  "description": "Family Photos API",
+  "description": "api for sharing my familt photos",
   "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
-    "test": "./node_modules/mocha/bin/_mocha"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -18,12 +19,15 @@
     "url": "https://github.com/ZachBarbre/family-photos-api/issues"
   },
   "homepage": "https://github.com/ZachBarbre/family-photos-api#readme",
-  "dependencies": {
-    "koa": "^2.13.1"
-  },
   "devDependencies": {
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
     "mocha": "^8.3.2"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "knex": "^0.95.4",
+    "koa": "^2.13.1",
+    "pg": "^8.6.0"
   }
 }
