@@ -66,12 +66,33 @@ photos.post(BASE_URL, async (ctx) => {
       fileType: file.type
     }
     const imageData = await spaces.uploadToSpaces(imageInput)
-    console.log("🚀 ~ file: photos.js ~ line 69 ~ photos.post ~ imageData", imageData)
     const description = ctx.request.body.description
-    console.log("🚀 ~ file: photos.js ~ line 71 ~ photos.post ~ description", description)
-    ctx.status = 200
+    
+    const photo = await queries.addPhoto({
+      spaces: imageData,
+      description: description
+    })
+
+    if (photo.length) {
+      ctx.status = 201
+      ctx.body = {
+        status: 'success',
+        data: photo
+      }
+    } else {
+      ctx.status = 400;
+      ctx.body = {
+        status: 'error',
+        message: 'Something went wrong'
+      }
+    }
   } catch (error) {
     console.error(error)
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: error.message || 'Sorry, an error has occured.'
+    }
   }
 })
 

@@ -21,8 +21,15 @@ function getSinglePhoto(id) {
     .where('id', id)
 }
 
+function addPhoto(photo) {
+  return knex('photos')
+    .insert(photo)
+    .returning('*')
+}
+
 module.exports = {
   getFirstTenPhotos,
   getPaginationPhotos,
-  getSinglePhoto
+  getSinglePhoto,
+  addPhoto
 }

@@ -3,9 +3,7 @@ exports.up = function(knex) {
   return knex.schema.createTable('photos', table => {
     table.increments()
     table.json('spaces').notNullable()
-    table.integer('hearts').defaultTo(0)
     table.string('description')
-    table.datetime('photo_date')
     table.timestamp('created_at').defaultTo(knex.fn.now())
   })
 };
