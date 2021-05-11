@@ -8,6 +8,8 @@ chai.use(chaiHttp);
 const server = require('../app');
 const knex = require('../db/connection')
 
+const fs = require('fs')
+
 describe('routes : photos', function() {
   beforeEach(function() {
     return knex.migrate.rollback()
@@ -79,6 +81,21 @@ describe('routes : photos', function() {
           res.body.message.should.eq('That photo does not exist')
           done()
         })
+    })
+  })
+
+  describe('POST /api/v1/photos/upload', function() {
+    it('should return photo that was added', function(done) {
+      chai.request(server)
+      .post('/api/v1/photos')
+      .field('description', 'Mooney Falls')
+      .attach('image', fs.readFileSync('../P1000221.JPG'), 'P1000221.JPG')
+      .end(function (err, res) {
+        should.not.exist(err)
+        res.status.should.eql(200);
+        
+        done()
+      })
     })
   })
 })

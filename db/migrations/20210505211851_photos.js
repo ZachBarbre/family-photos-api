@@ -2,7 +2,7 @@
 exports.up = function(knex) {
   return knex.schema.createTable('photos', table => {
     table.increments()
-    table.string('url').notNullable()
+    table.json('spaces').notNullable()
     table.integer('hearts').defaultTo(0)
     table.string('description')
     table.datetime('photo_date')
