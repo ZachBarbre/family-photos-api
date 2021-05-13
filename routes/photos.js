@@ -96,4 +96,65 @@ photos.post(BASE_URL, async (ctx) => {
   }
 })
 
+photos.delete(`${BASE_URL}/photo/:id`, async (ctx) => {
+  try {
+    const photo = await queries.deletePhoto(ctx.params.id)
+    if (photo.length) {
+      const deletedPhotos = await spaces.deleteFromSpaces(photo[0].spaces)
+
+      if (deletedPhotos === 'success') {
+        ctx.status = 200;
+        ctx.body = {
+          status: 'success',
+          data: photo
+        }
+      } else {
+        ctx.status = 500
+        ctx.body = {
+          status: 'error',
+          message: 'An error has occured deleting photos from spaces'
+        }
+      }
+    } else {
+      ctx.status = 404
+      ctx.body = {
+        status: 'error',
+        message: 'That photo does not exist.'
+      }
+    }
+  } catch (error) {
+    console.error(error)
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: error.message || 'Sorry, an error has occured.'
+    }
+  }
+})
+
+photos.put(`${BASE_URL}/photo/:id`, async (ctx) => {
+  try {
+    const photo = await queries.updatePhoto(ctx.params.id, ctx.request.body)
+    if (photo.length) {
+      ctx.status = 200
+      ctx.body = {
+        status: 'success',
+        data: photo
+      }
+    } else {
+      ctx.status = 404
+      ctx.body = {
+        status: 'error',
+        message: 'That photo does not exist.'
+      }
+    }
+  } catch (error) {
+    console.error(error)
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: error.message || 'Sorry, an error has occured.'
+    }
+  }
+})
 module.exports = photos

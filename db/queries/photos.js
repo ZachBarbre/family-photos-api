@@ -27,9 +27,25 @@ function addPhoto(photo) {
     .returning('*')
 }
 
+function deletePhoto(id) {
+  return knex('photos')
+    .del()
+    .where('id', id)
+    .returning('*')
+}
+
+function updatePhoto(id, photo) {
+  return knex('photos')
+    .update(photo)
+    .where('id', id)
+    .returning('*')
+}
+
 module.exports = {
   getFirstTenPhotos,
   getPaginationPhotos,
   getSinglePhoto,
-  addPhoto
+  addPhoto,
+  deletePhoto,
+  updatePhoto
 }

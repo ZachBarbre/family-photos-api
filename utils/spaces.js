@@ -2,6 +2,9 @@ const AWS = require('aws-sdk')
 const fs = require('fs')
 const sharp = require('sharp')
 
+require('dotenv').config()
+
+
 function getBucket(env) {
   if (env === 'test') {
     return 'barbrephotos-test'
@@ -58,6 +61,38 @@ async function upload(image) {
   })
 }
 
+async function deleteImage(key) {
+  return new Promise((resolve, reject) => {
+    const enviroment = process.env.NODE_ENV || 'development';
+    const bucket = getBucket(enviroment);
+
+    const spacesEndpoint = new AWS.Endpoint('nyc3.digitaloceanspaces.com')
+
+    const s3 = new AWS.S3({
+      endpoint: spacesEndpoint,
+      accessKeyId: process.env.SPACES_KEY,
+      secretAccessKey: process.env.SPACES_SECRET
+    })
+
+    const deleteParams = {
+      Bucket: bucket,
+      Key: key
+    }
+
+    s3.deleteObject(
+      deleteParams,
+      function(error, data) {
+        if (error) {
+          console.error(error)
+          reject(error)
+        } else if (data) {
+          resolve(data)
+        }
+      }
+    )
+  })
+}
+
 async function uploadToSpaces(image) {
   const { fileName, filePath, fileType } = image
 
@@ -100,8 +135,22 @@ async function uploadToSpaces(image) {
   return imageObj
 }
 
+async function deleteFromSpaces(spaces) {
+  for (const image in spaces) {
+    try {
+      await deleteImage(spaces[image].id)
+    } catch (error) {
+      return error
+    }
+  }
+
+  return 'success'
+}
+
 module.exports = {
   upload,
   getBucket,
-  uploadToSpaces
+  uploadToSpaces,
+  del: deleteImage,
+  deleteFromSpaces
 }
