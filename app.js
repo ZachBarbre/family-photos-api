@@ -1,6 +1,7 @@
 require('dotenv').config();
 const Koa = require('koa');
 const koaBody = require('koa-body');
+const helment = require('koa-helmet')
 
 const indexRoute = require('./routes/index');
 const photosRoute = require('./routes/photos');
@@ -8,6 +9,7 @@ const photosRoute = require('./routes/photos');
 const app = new Koa;
 const PORT = process.env.PORT || 3001;
 
+app.use(helment())
 app.use(koaBody({ multipart: true }))
 app.use(indexRoute.routes())
 app.use(photosRoute.routes())
