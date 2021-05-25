@@ -24,12 +24,12 @@ async function upload(image) {
     const enviroment = process.env.NODE_ENV || 'development';
     const bucket = getBucket(enviroment);
 
-    const spacesEndpoint = new AWS.Endpoint('nyc3.digitaloceanspaces.com')
+    const spacesEndpoint = new AWS.Endpoint('s3.us-west-000.backblazeb2.com')
 
     const s3 = new AWS.S3({
       endpoint: spacesEndpoint,
-      accessKeyId: process.env.SPACES_KEY,
-      secretAccessKey: process.env.SPACES_SECRET
+      accessKeyId: process.env.BB_KEY,
+      secretAccessKey: process.env.BB_SECRET
     })
     const stream = resize 
       ? filePath
@@ -97,10 +97,17 @@ async function uploadToSpaces(image) {
   const { fileName, filePath, fileType } = image
 
   async function resize(size) {
-    const buffer = await sharp(filePath)
-    .resize({ width: size })
-    .withMetadata()
-    .toBuffer()
+    const image = sharp(filePath);
+    const metadata = await image.metadata()
+    const resizeOptions = metadata.orientation === 6 || metadata.orientation === 8 
+      ? { height: size }
+      : { width: size }
+    
+    const buffer = await image
+      .resize(resizeOptions)
+      .withMetadata()
+      .toBuffer()
+
     const imageInput = {
       fileName: `${size}-${fileName}`,
       filePath: buffer,
@@ -108,28 +115,28 @@ async function uploadToSpaces(image) {
       resize: true
     }
     const resizeImage = await upload(imageInput)
-    const cdnUrl = resizeImage.url.replace('nyc3', 'nyc3.cdn')
-    resizeImage.url = cdnUrl
+    const cdnUrl = `https://photos.barbre.family/file/barbrephotos/${imageInput.fileName}`
+    resizeImage.cdnUrl = cdnUrl
     return resizeImage
   }
 
-  const fullImageInput = {
-    fileName: `full-${fileName}`,
-    filePath: filePath,
-    fileType: fileType,
-    resize: false
-  }
-  const fullImage = await upload(fullImageInput)
-  const cdnUrl = fullImage.url.replace('nyc3', 'nyc3.cdn')
-  fullImage.url = cdnUrl
+  // const fullImageInput = {
+  //   fileName: `full-${fileName}`,
+  //   filePath: filePath,
+  //   fileType: fileType,
+  //   resize: false
+  // }
+  // const fullImage = await upload(fullImageInput)
+  // const cdnUrl = fullImage.url.replace('nyc3', 'nyc3.cdn')
+  // fullImage.cdnUrl = cdnUrl
 
   const imageObj = {
-    image_full: fullImage,
+    // image_full: fullImage,
+    image_350: await resize(350),
     image_620: await resize(620),
     image_748: await resize(748),
     image_1004: await resize(1004),
     image_1580: await resize(1580),
-    image_1900: await resize(1900),
   }
 
   return imageObj
