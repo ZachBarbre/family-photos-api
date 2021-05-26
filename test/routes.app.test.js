@@ -16,7 +16,7 @@ describe('routes : app', () => {
         res.status.should.eql(200);
         res.type.should.eql('application/json');
         res.body.status.should.eql('success');
-        res.body.message.should.eql('Hello, world!');
+        res.body.message.should.eql('Welcome to the Barbre.Family API');
         done();
       });
   });

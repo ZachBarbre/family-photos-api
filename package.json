@@ -7,8 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
+    "start": "export NODE_ENV=production && node app.js",
+    "dev": "export NODE_ENV=development && nodemon app.js",
+    "dev:test": "export NODE_ENV=test && nodemon app.js",
     "test": "./node_modules/mocha/bin/_mocha ./test/**/*.test.js"
   },
   "repository": {
@@ -27,11 +28,16 @@
     "mocha": "^8.3.2"
   },
   "dependencies": {
+    "@koa/cors": "^3.1.0",
     "@koa/router": "^10.0.0",
+    "aws-sdk": "^2.903.0",
+    "dayjs": "^1.10.4",
     "dotenv": "^8.2.0",
     "knex": "^0.95.4",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
-    "pg": "^8.6.0"
+    "koa-helmet": "^6.1.0",
+    "pg": "^8.6.0",
+    "sharp": "^0.28.2"
   }
 }
